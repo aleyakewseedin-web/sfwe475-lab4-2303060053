@@ -9,3 +9,7 @@ key={index}) instead of task.id is risky if the list can be reordered or filtere
 
 3- when removing the onChange handler from NewTaskList.tsx 
 i was not able to type or delete what was written on the box in the UI in the browser 
+4-Who owns the state: TaskBoard owns tasks, created with useState. NewTaskInput owns only the temporary text being typed.
+Who asked for the change: NewTaskInput, when the user clicked Add. But it can’t change tasks, because it doesn’t own them.
+How the request travelled: TaskBoard passed the function handleAddTask down as the prop onAddTask. On click, NewTaskInput called onAddTask(text), which ran handleAddTask back inside TaskBoard.
+What happened next: handleAddTask called setTasks with a new array. React re-rendered TaskBoard, which passed the new tasks to TaskList, which mapped over them and showed a new card.

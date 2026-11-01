@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import type { Task } from "./schemas";
+import type { Task,CreateTaskInput } from "./schemas";
 import { simulateFetchTasks } from "./mockApi";
 import TaskList from "./TaskList";
+import NewTaskForm from "./NewTaskForm";
+
 
 function TaskBoard() {
   const [status, setStatus] = useState<
@@ -9,7 +11,7 @@ function TaskBoard() {
   >("loading");
   const [tasks, setTasks] = useState<Task[]>([]);
 
- function loadTasks() {
+  function loadTasks() {
     setStatus("loading");
     simulateFetchTasks()
       .then((data) => {
@@ -22,8 +24,22 @@ function TaskBoard() {
   useEffect(() => {
     loadTasks();
   }, []);
+  function handleAddTask(data: CreateTaskInput) {
+    console.log("adding", data);
+  setTasks([ 
+    ...tasks,
+    {
+      id: Date.now(),
+      title: data.title,
+      dueDate: data.dueDate,
+      done: data.status === "done",
+      status: data.status,
+    },
+  ]);
+  setStatus("success");
+}
 
-if (status === "loading") return <p>Loading tasks...</p>;
+  if (status === "loading") return <p>Loading tasks...</p>;
   if (status === "error")
     return (
       <div>
@@ -31,8 +47,19 @@ if (status === "loading") return <p>Loading tasks...</p>;
         <button onClick={loadTasks}>Try again</button>
       </div>
     );
-  if (status === "empty") return <p>No tasks yet. Add your first one below.</p>;
-  return <TaskList tasks={tasks} />;
+  if (status === "empty")
+    return (
+      <div>
+        <p>No tasks yet. Add your first one below.</p>
+        <NewTaskForm onAddTask={handleAddTask} />
+      </div>
+    );
+  return (
+    <div>
+      <NewTaskForm onAddTask={handleAddTask} />
+      <TaskList tasks={tasks} />
+    </div>
+  );
 }
 
 export default TaskBoard;

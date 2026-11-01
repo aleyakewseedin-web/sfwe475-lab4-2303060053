@@ -4,7 +4,7 @@ function TaskList({ tasks }: { tasks: Task[] }) {
  return (
  <div>
  {tasks.map((task) => (
- <TaskCard key={task.id} title={task.title} done={task.done} />
+ <TaskCard key={task.id} title={task.title} done={task.done} dueDate={task.dueDate} />
  ))}
  </div>
  );

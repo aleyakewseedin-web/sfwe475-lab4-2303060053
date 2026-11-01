@@ -1,7 +1,7 @@
-import type { Task } from "./schemas"; 
+import type { CreateTaskInput, Task } from "./schemas"; 
 const sampleTasks: Task[] = [ 
-    { id: 1, title: "Read Chapter 4", done: false },
-    { id: 2, title: "Build NewTaskForm", done: false }, ];
+    { id: 1, title: "Read Chapter 4", done: false, status: "open" },
+    { id: 2, title: "Build NewTaskForm", done: false, status: "open" }, ];
 
 type MockOptions = { delayMs?: number; shouldFail?: boolean; empty?: boolean }; 
 

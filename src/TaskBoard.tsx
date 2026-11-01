@@ -1,24 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Task } from "./schemas";
+import { simulateFetchTasks } from "./mockApi";
 import TaskList from "./TaskList";
-import NewTaskInput from "./NewTaskInput";
 
 function TaskBoard() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Read Chapter 3", done: false },
-    { id: 2, title: "Build TaskCard", done: true },
-  ]);
+  const [status, setStatus] = useState<
+    "loading" | "success" | "empty" | "error"
+  >("loading");
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleAddTask(title: string) {
-    setTasks([...tasks, { id: tasks.length + 1, title, done: false }]);
+ function loadTasks() {
+    setStatus("loading");
+    simulateFetchTasks()
+      .then((data) => {
+        setTasks(data);
+        setStatus(data.length === 0 ? "empty" : "success");
+      })
+      .catch(() => setStatus("error"));
   }
 
-  return (
-    <div>
-      <NewTaskInput onAddTask={handleAddTask} />
-      <TaskList tasks={tasks} />
-    </div>
-  );
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+if (status === "loading") return <p>Loading tasks...</p>;
+  if (status === "error")
+    return (
+      <div>
+        <p>We couldn't load your tasks.</p>
+        <button onClick={loadTasks}>Try again</button>
+      </div>
+    );
+  if (status === "empty") return <p>No tasks yet. Add your first one below.</p>;
+  return <TaskList tasks={tasks} />;
 }
 
 export default TaskBoard;

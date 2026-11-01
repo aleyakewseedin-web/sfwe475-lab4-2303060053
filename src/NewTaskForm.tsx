@@ -27,15 +27,31 @@ if (!result.success) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <input value={title} onChange={(e) => setTitle(e.target.value)} />
-        {errors.title && <p style={{ color: "red" }}>{errors.title[0]}</p>}
+        <label htmlFor="title">Title: </label>
+        <input id="title" 
+        value={title} 
+        onChange={(e) => setTitle(e.target.value)}
+        aria-invalid={!!errors.title}
+        aria-describedby={errors.title ? "title-error" : undefined}
+         />
+        {errors.title && (
+    <p id="title-error" style={{ color: "red" }}>
+      {errors.title[0]}
+    </p>
+  )}
+</div>
+      <div>
+        <label htmlFor="dueDate">Due Date: </label>
+        <input id="dueDate" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+        {errors.dueDate && (
+          <p id="dueDate-error" style={{ color: "red" }}>
+            {errors.dueDate[0]}
+          </p>
+        )}
       </div>
       <div>
-        <input value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        {errors.dueDate && <p style={{ color: "red" }}>{errors.dueDate[0]}</p>}
-      </div>
-      <div>
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+        <label htmlFor="status">Status: </label>
+        <select id="status" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="open">Open</option>
           <option value="doing">Doing</option>
           <option value="done">Done</option>

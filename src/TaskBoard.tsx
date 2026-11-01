@@ -39,27 +39,28 @@ function TaskBoard() {
   setStatus("success");
 }
 
-  if (status === "loading") return <p>Loading tasks...</p>;
-  if (status === "error")
-    return (
-      <div>
-        <p>We couldn't load your tasks.</p>
-        <button onClick={loadTasks}>Try again</button>
-      </div>
-    );
-  if (status === "empty")
-    return (
-      <div>
-        <p>No tasks yet. Add your first one below.</p>
-        <NewTaskForm onAddTask={handleAddTask} />
-      </div>
-    );
-  return (
-    <div>
-      <NewTaskForm onAddTask={handleAddTask} />
-      <TaskList tasks={tasks} />
+return (
+  <div>
+    <div aria-live="polite">
+      {status === "loading" && <p>Loading tasks...</p>}
+      {status === "error" && (
+        <div>
+          <p>We couldn't load your tasks.</p>
+          <button onClick={loadTasks}>Try again</button>
+        </div>
+      )}
+      {status === "empty" && <p>No tasks yet. Add your first one below.</p>}
     </div>
-  );
+
+    {(status === "success" || status === "empty") && (
+      <NewTaskForm onAddTask={handleAddTask} />
+    )}
+    {status === "success" && <TaskList tasks={tasks} />}
+  </div>
+);
+
+ 
 }
+
 
 export default TaskBoard;

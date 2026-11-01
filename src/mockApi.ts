@@ -1,4 +1,4 @@
-import type { CreateTaskInput, Task } from "./schemas"; 
+import type {  Task } from "./schemas"; 
 const sampleTasks: Task[] = [ 
     { id: 1, title: "Read Chapter 4", done: false, status: "open" },
     { id: 2, title: "Build NewTaskForm", done: false, status: "open" }, ];

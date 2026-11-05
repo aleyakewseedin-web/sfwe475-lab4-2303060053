@@ -3,6 +3,9 @@ import type { Task,CreateTaskInput } from "./schemas";
 import { simulateFetchTasks } from "./mockApi";
 import TaskList from "./TaskList";
 import NewTaskForm from "./NewTaskForm";
+import FilterBar from "./filterbar";
+import type { Filter } from "./filterbar";
+
 
 
 function TaskBoard() {
@@ -10,6 +13,7 @@ function TaskBoard() {
     "loading" | "success" | "empty" | "error"
   >("loading");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [filter, setFilter] = useState<Filter>("all");
 
   function loadTasks() {
     setStatus("loading");
@@ -39,28 +43,44 @@ function TaskBoard() {
   setStatus("success");
 }
 
-return (
-  <div>
-    <div aria-live="polite">
-      {status === "loading" && <p>Loading tasks...</p>}
-      {status === "error" && (
-        <div>
-          <p>We couldn't load your tasks.</p>
-          <button onClick={loadTasks}>Try again</button>
-        </div>
+ function handleToggleTask(id: number) {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id
+          ? { ...task, done: !task.done, status: task.done ? "open" : "done" }
+          : task
+      )
+    );
+  }
+
+  return (
+    <div>
+      <div aria-live="polite">
+        {status === "loading" && <p>Loading tasks...</p>}
+        {status === "error" && (
+          <div>
+            <p>We couldn't load your tasks.</p>
+            <button onClick={loadTasks}>Try again</button>
+          </div>
+        )}
+        {status === "empty" && <p>No tasks yet. Add your first one below.</p>}
+      </div>
+
+      {(status === "success" || status === "empty") && (
+        <NewTaskForm onAddTask={handleAddTask} />
       )}
-      {status === "empty" && <p>No tasks yet. Add your first one below.</p>}
+      {status === "success" && (
+        <>
+          <FilterBar filter={filter} onFilterChange={setFilter} />
+          <TaskList
+            tasks={tasks}
+            filter={filter}
+            onToggleTask={handleToggleTask}
+          />
+        </>
+      )}
     </div>
-
-    {(status === "success" || status === "empty") && (
-      <NewTaskForm onAddTask={handleAddTask} />
-    )}
-    {status === "success" && <TaskList tasks={tasks} />}
-  </div>
-);
-
- 
+  );
 }
-
 
 export default TaskBoard;
